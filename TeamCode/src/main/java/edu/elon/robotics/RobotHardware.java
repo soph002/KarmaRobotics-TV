@@ -65,9 +65,9 @@ public class RobotHardware {
          * If all 3 motors apply the same power in the
          * same direction, the robot will turn in place.
          */
-        double powerLeft  = drive;
-        double powerRight = drive;
-        double powerAux   = strafe;
+        double powerLeft=(-drive+turn+strafe/2);
+        double powerRight=(drive+turn+strafe/2);
+        double powerAux=(turn-strafe);
 
         /*
          * Apply the power to the motors.

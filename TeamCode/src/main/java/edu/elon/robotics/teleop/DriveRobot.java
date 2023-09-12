@@ -40,7 +40,7 @@ public class DriveRobot extends LinearOpMode {
          * to drive the robot.
          */
         double drive  = gamepad1.left_stick_y;
-        double strafe = -gamepad1.left_stick_x;
+        double strafe = gamepad1.left_stick_x;
         double turn   = gamepad1.right_stick_x;
 
         /*
