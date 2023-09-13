@@ -12,7 +12,9 @@ public class TimedDrive extends AutoCommon{
         super.runOpMode();
         waitForStart();
 
-        driveForTime(0.7,1500);
+        driveForTime(0.3,2000);
+//        strafeForTime(0.7, 500);
+//        turnForTime(1,500);
     }
 
 }

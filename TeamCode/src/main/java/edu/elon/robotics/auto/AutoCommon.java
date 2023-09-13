@@ -23,4 +23,15 @@ public class AutoCommon extends LinearOpMode {
         robot.startMove(0,0,0,0);
     }
 
+    protected void strafeForTime(double power, long milliseconds){
+        robot.startMove(0, power,0,0);
+        sleep(milliseconds);
+        robot.startMove(0,0,0,0);
+    }
+
+    protected void turnForTime(double power, long milliseconds){
+        robot.startMove(0,0,power,0);
+        sleep(milliseconds);
+        robot.startMove(0,0,0,0);
+    }
 }
