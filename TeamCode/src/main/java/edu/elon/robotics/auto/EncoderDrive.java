@@ -1,5 +1,6 @@
 package edu.elon.robotics.auto;
-
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+@Autonomous(name="Encoder Drive", group="labs")
 public class EncoderDrive extends AutoCommon{
 
     @Override
@@ -8,8 +9,8 @@ public class EncoderDrive extends AutoCommon{
         waitForStart();
 
         robot.resetDriveEncoders();
-        robot.startMove(0.3, 0, 0, 0);
-        while (opModeIsActive() && Math.abs(robot.motorLeft.getCurrentPosition()) < 500) {
+        robot.startMove(0, 0.3, 0, 0);
+        while (opModeIsActive() && Math.abs(robot.motorLeft.getCurrentPosition()) < 3000) {
 
         }
         robot.startMove(0,0,0,0);

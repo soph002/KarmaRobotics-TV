@@ -69,6 +69,11 @@ public class RobotHardware {
         double powerRight= -0.58 * drive + 1.0 * strafe / 3.0 + turn / 3.0;
         double powerAux= -2.0 * strafe / 3.0 + turn / 3.0;
 
+        double scale = Math.max(Math.max(Math.max(1.0, Math.abs(powerLeft)), Math.abs(powerRight)), Math.abs(powerAux));
+
+        powerLeft=powerLeft/scale;
+        powerRight=powerRight/scale;
+        powerAux=powerAux/scale;
         /*
          * Apply the power to the motors.
          */
