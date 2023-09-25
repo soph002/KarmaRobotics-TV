@@ -7,8 +7,6 @@ public class RampingPower extends AutoCommon{
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
         waitForStart();
-
-        robot.resetDriveEncoders();
-        driveForTime(0.8,2000);
+        rampingForDrive(.8);
     }
 }

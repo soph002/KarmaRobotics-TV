@@ -3,7 +3,11 @@ package edu.elon.robotics;
 /**
  * Defines the robot hardware and implements a few
  * fundamental methods.
+ * adb connect 192.168.43.1
  */
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -65,34 +69,6 @@ public class RobotHardware {
          * If all 3 motors apply the same power in the
          * same direction, the robot will turn in place.
          */
-        // reqPower = 0.8	// requested power
-        //	BASE_POWER = 0.15	// power at which the robot starts to move
-        //	RAMP_TICKS = 1000 	// how many ticks to ramp
-        //	curTicks 		// current number of ticks from the motor
-        //	curPower		// current power of the motor
-        //
-        //	// ramp up to the requested power
-        //	curPower = basePower
-        //	while (curTicks is less than RAMP_TICKS)
-        //	  set motor power to curPower
-        //  curPower = BASE_POWER + (curTicks / RAMP_TICKS * (reqPower - BASE_POWER))
-        double requestPower=drive+strafe+turn;
-        double RAMP_TICKS = 500;
-        double BASE_POWER = .4;
-        double curPower=BASE_POWER;
-
-        motorLeft.setPower(BASE_POWER);
-        motorRight.setPower(-BASE_POWER);
-        motorAux.setPower(0);
-
-        while(Math.abs(motorLeft.getCurrentPosition()) < RAMP_TICKS){
-            motorLeft.setPower(curPower);
-            motorRight.setPower(-curPower);
-            motorAux.setPower(0);
-            curPower=BASE_POWER+(Math.abs(motorLeft.getCurrentPosition())/RAMP_TICKS * (requestPower-BASE_POWER));
-        }
-
-
         double powerLeft= 0.58 * drive + 1.0 * strafe / 3.0 + turn / 3.0;
         double powerRight= -0.58 * drive + 1.0 * strafe / 3.0 + turn / 3.0;
         double powerAux= -2.0 * strafe / 3.0 + turn / 3.0;
@@ -108,6 +84,7 @@ public class RobotHardware {
         motorLeft.setPower(powerLeft);
         motorRight.setPower(powerRight);
         motorAux.setPower(powerAux);
+
     }
 
 }
