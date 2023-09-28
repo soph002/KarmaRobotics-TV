@@ -12,7 +12,13 @@ public class TimedDrive extends AutoCommon{
         super.runOpMode();
         waitForStart();
 
-        driveForTime(0.3,2000);
+        // driveForTime(0.3,2000);
+        driveDistance(50, 50,.5);
+        sleep(500);
+//        sleep(500);
+//        turnAngle(90, -.5);
+//        sleep(500);
+//        turnAngle(360, .5);
 //        strafeForTime(0.7, 500);
 //        turnForTime(1,500);
     }

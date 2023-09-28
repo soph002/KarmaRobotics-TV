@@ -35,6 +35,36 @@ public class AutoCommon extends LinearOpMode {
         robot.startMove(0,0,0,0);
     }
 
+    protected void turnAngle(double degrees, double maxPower) {
+        robot.resetDriveEncoders();
+        while(Math.abs(robot.motorLeft.getCurrentPosition()) < robot.convertDegreesToTicks(degrees) && opModeIsActive()) {
+            robot.startMove(0,0,maxPower,0);
+        }
+        robot.startMove(0,0,0,0);
+
+    }
+
+    protected void driveDistance(double cmForward, double cmSide, double maxPower) {
+        robot.resetDriveEncoders();
+        if(cmForward != 0 && cmSide !=0){
+            while(Math.abs(robot.motorLeft.getCurrentPosition()) < robot.convertDistanceToTicks(cmForward)
+                    || Math.abs(robot.motorAux.getCurrentPosition()) < robot.convertDistanceToTicks(cmSide)) {
+                robot.startMove(maxPower, maxPower,0,0);
+            }
+        }
+        if(cmForward == 0 && cmSide !=0){
+            while(Math.abs(robot.motorAux.getCurrentPosition()) < robot.convertDistanceToTicks(cmSide)) {
+                robot.startMove(0, maxPower,0,0);
+            }
+        }
+        if(cmForward != 0 && cmSide ==0){
+            while(Math.abs(robot.motorLeft.getCurrentPosition()) < robot.convertDistanceToTicks(cmForward)) {
+                robot.startMove(maxPower, 0,0,0);
+            }
+        }
+        robot.startMove(0,0,0,0);
+    }
+
     protected void rampingForDrive(double requestPower){
         robot.resetDriveEncoders();
         double RAMP_TICKS = 1000;
