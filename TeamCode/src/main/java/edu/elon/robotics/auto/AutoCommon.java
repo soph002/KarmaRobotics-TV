@@ -35,6 +35,25 @@ public class AutoCommon extends LinearOpMode {
         robot.startMove(0,0,0,0);
     }
 
+    protected void driveHeading(double distance, double heading, double maxPower){
+        double distanceForward = Math.sin(Math.abs(heading)) * Math.abs(distance);
+        double distanceSide= Math.cos(Math.abs(heading)) * Math.abs(distance);
+
+        if(heading < 0){
+            while((Math.abs(robot.motorLeft.getCurrentPosition()) < robot.convertDistanceToTicks(distanceForward)
+                    || Math.abs(robot.motorAux.getCurrentPosition()) < robot.convertDistanceToTicks(distanceSide))&& opModeIsActive()) {
+                robot.startMove(-maxPower, maxPower,0,0);
+            }
+        }
+        if(heading >=0){
+            while((Math.abs(robot.motorLeft.getCurrentPosition()) < robot.convertDistanceToTicks(distanceForward)
+                    || Math.abs(robot.motorAux.getCurrentPosition()) < robot.convertDistanceToTicks(distanceSide))&& opModeIsActive()) {
+                robot.startMove(maxPower, maxPower,0,0);
+            }
+        }
+
+    }
+
     protected void turnAngle(double degrees, double maxPower) {
         robot.resetDriveEncoders();
         while(Math.abs(robot.motorLeft.getCurrentPosition()) < robot.convertDegreesToTicks(degrees) && opModeIsActive()) {
@@ -47,18 +66,18 @@ public class AutoCommon extends LinearOpMode {
     protected void driveDistance(double cmForward, double cmSide, double maxPower) {
         robot.resetDriveEncoders();
         if(cmForward != 0 && cmSide !=0){
-            while(Math.abs(robot.motorLeft.getCurrentPosition()) < robot.convertDistanceToTicks(cmForward)
-                    || Math.abs(robot.motorAux.getCurrentPosition()) < robot.convertDistanceToTicks(cmSide)) {
+            while((Math.abs(robot.motorLeft.getCurrentPosition()) < robot.convertDistanceToTicks(cmForward)
+                    || Math.abs(robot.motorAux.getCurrentPosition()) < robot.convertDistanceToTicks(cmSide))&& opModeIsActive()) {
                 robot.startMove(maxPower, maxPower,0,0);
             }
         }
         if(cmForward == 0 && cmSide !=0){
-            while(Math.abs(robot.motorAux.getCurrentPosition()) < robot.convertDistanceToTicks(cmSide)) {
+            while(Math.abs(robot.motorAux.getCurrentPosition()) < robot.convertDistanceToTicks(cmSide) && opModeIsActive()) {
                 robot.startMove(0, maxPower,0,0);
             }
         }
         if(cmForward != 0 && cmSide ==0){
-            while(Math.abs(robot.motorLeft.getCurrentPosition()) < robot.convertDistanceToTicks(cmForward)) {
+            while(Math.abs(robot.motorLeft.getCurrentPosition()) < robot.convertDistanceToTicks(cmForward) && opModeIsActive()) {
                 robot.startMove(maxPower, 0,0,0);
             }
         }

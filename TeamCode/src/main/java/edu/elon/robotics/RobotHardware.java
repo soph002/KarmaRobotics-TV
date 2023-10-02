@@ -1,6 +1,6 @@
 package edu.elon.robotics;
 
-/**
+/*
  * Defines the robot hardware and implements a few
  * fundamental methods.
  * adb connect 192.168.43.1
@@ -22,9 +22,9 @@ public class RobotHardware {
 
     // robot constants
     public final double TICKS_PER_ROTATION = 537.6;
-    public final double WHEEL_CIRCUMFERENCE = 32; // in cm
+    public final double WHEEL_CIRCUMFERENCE = 34; // in cm
     public final double TICKS_PER_CM = TICKS_PER_ROTATION/WHEEL_CIRCUMFERENCE;
-    public final double TURNING_DIAMETER=34.5; // in cm
+    public final double TURNING_DIAMETER=35.8; // in cm
     public final double FULL_CIRCLE=360.0;
     // 35 cm FROM CIRCLE ON GROUND
     // s= 29.5 cm

@@ -2,11 +2,8 @@ package edu.elon.robotics.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import edu.elon.robotics.auto.AutoCommon;
-
-@Autonomous(name="Patterned Drive", group="labs")
-public class PatternedDrive extends AutoCommon{
-
+@Autonomous(name="Patterned Strafe Drive", group="labs")
+public class PatternedStrafeDrive extends AutoCommon{
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
@@ -23,27 +20,21 @@ public class PatternedDrive extends AutoCommon{
         //turn counter-clockwise 90 degrees
 
         double speed = .4;
-
+        int SLEEPTIME = 300;
+        //driveDistance(36.39778, 100.002,-speed);
+        //driveHeading(50,-20,.5);
         driveDistance(150, 0, speed);
-        int SLEEPTIME = 200;
+
         sleep(SLEEPTIME);
         driveDistance(50,0,-speed);
         sleep(SLEEPTIME);
-        turnAngle(90,-speed);
+        driveDistance(0,100,-speed);
         sleep(SLEEPTIME);
-        driveDistance(100,0,speed);
-//        driveDistance(0,100,-speed);
+
+        driveHeading(50,-20,.5);
+
+        driveDistance(0,63.6,speed);
         sleep(SLEEPTIME);
-        turnAngle(70,speed);
-        sleep(SLEEPTIME);
-        driveDistance(106.42, 0,-speed);
-        sleep(SLEEPTIME);
-        turnAngle(250,-speed);
-        sleep(SLEEPTIME);
-        driveDistance(63.6,0,speed);
-        sleep(SLEEPTIME);
-        turnAngle(90,-speed);
-        sleep(500);
 
     }
 
