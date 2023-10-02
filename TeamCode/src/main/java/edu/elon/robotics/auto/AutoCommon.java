@@ -36,6 +36,7 @@ public class AutoCommon extends LinearOpMode {
     }
 
     protected void driveHeading(double distance, double heading, double maxPower){
+        robot.resetDriveEncoders();
         double distanceForward = Math.sin(Math.abs(heading)) * Math.abs(distance);
         double distanceSide= Math.cos(Math.abs(heading)) * Math.abs(distance);
 
