@@ -31,7 +31,7 @@ public class PatternedStrafeDrive extends AutoCommon{
         driveDistance(0,100,-speed);
         sleep(SLEEPTIME);
 
-        driveHeading(50,-20,.5);
+        driveHeading(80,-20,.5);
 
         driveDistance(0,63.6,speed);
         sleep(SLEEPTIME);

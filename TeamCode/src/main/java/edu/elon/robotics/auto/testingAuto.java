@@ -12,19 +12,30 @@ public class testingAuto extends AutoCommon{
         super.runOpMode();
         waitForStart();
 
-        // driveForTime(0.3,2000);
-        double speed=.3;
-        driveDistance(0, 123,speed);
-        sleep(900);
-        turnAngle(90,-speed);
-        sleep(300);
-        driveDistance(123,0,speed);
-//        sleep(500);
-//        turnAngle(90, -.5);
-//        sleep(500);
-//        turnAngle(360, .5);
-//        strafeForTime(0.7, 500);
-//        turnForTime(1,500);
+        // test turnIMU()
+        turnIMU(90, 0.5);
+        sleep(1000);   // let robot settle before taking a final heading
+        System.out.println("TURNIMU_ " + getHeading());
+
+        turnIMU(-90, 0.5);
+        sleep(1000);
+        System.out.println("TURNIMU_ " + getHeading());
+
+        turnIMU(45, 0.5);
+        sleep(1000);
+        System.out.println("TURNIMU_ " + getHeading());
+
+        turnIMU(-45, 0.5);
+        sleep(1000);
+        System.out.println("TURNIMU_ " + getHeading());
+
+        turnIMU(-180, 0.5);
+        sleep(1000);
+        System.out.println("TURNIMU_ neg" + getHeading());
+
+        turnIMU(180, 0.5);
+        sleep(1000);
+        System.out.println("TURNIMU_ " + getHeading());
     }
 
 }

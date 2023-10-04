@@ -4,13 +4,26 @@ package edu.elon.robotics.auto;
  * General autonomous methods.
  */
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 import edu.elon.robotics.RobotHardware;
 
 public class AutoCommon extends LinearOpMode {
 
     protected RobotHardware robot;
+
+    // how many degrees to adjust the requested degree angle by
+    private final double ANGLE_OVERSHOOT = 3.0;
+
+    // slow power of the motor for the final part of the turn
+    private final double TURN_ENDING_POWER = 0.2;
+
+    // number of degrees that will be done using the slow power
+    private final double SLOW_DOWN_DEGREES = 10;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -43,13 +56,13 @@ public class AutoCommon extends LinearOpMode {
         if(heading < 0){
             while((Math.abs(robot.motorLeft.getCurrentPosition()) < robot.convertDistanceToTicks(distanceForward)
                     || Math.abs(robot.motorAux.getCurrentPosition()) < robot.convertDistanceToTicks(distanceSide))&& opModeIsActive()) {
-                robot.startMove(-maxPower, maxPower,0,0);
+                robot.startMove(-maxPower, maxPower/2,0,0);
             }
         }
         if(heading >=0){
             while((Math.abs(robot.motorLeft.getCurrentPosition()) < robot.convertDistanceToTicks(distanceForward)
                     || Math.abs(robot.motorAux.getCurrentPosition()) < robot.convertDistanceToTicks(distanceSide))&& opModeIsActive()) {
-                robot.startMove(maxPower, maxPower,0,0);
+                robot.startMove(maxPower, maxPower/2,0,0);
             }
         }
 
@@ -114,6 +127,38 @@ public class AutoCommon extends LinearOpMode {
         }
 
         robot.startMove(0,0,0,0);
+    }
+
+    protected double getHeading() {
+        YawPitchRollAngles robotOrientation;
+        robotOrientation = robot.imu.getRobotYawPitchRollAngles();
+        return robotOrientation.getYaw(AngleUnit.DEGREES);
+    }
+
+    protected void turnIMU(double degrees, double power) {
+        //reset the yaw angle
+        robot.imu.resetYaw();
+        //start the motors turning the robot
+        //wait until the heading of the robot matches the desired heading
+        if(degrees<0) {
+            while((Math.abs(degrees)-ANGLE_OVERSHOOT-SLOW_DOWN_DEGREES) >= Math.abs(getHeading()) && opModeIsActive() && getHeading()<1) {
+                robot.startMove(0,0,power,0);
+            }
+            while((Math.abs(degrees)-ANGLE_OVERSHOOT)>=Math.abs(getHeading())&& opModeIsActive() && getHeading()<1){
+                robot.startMove(0,0,TURN_ENDING_POWER,0);
+            }
+        }
+        else {
+            while(Math.abs(degrees-ANGLE_OVERSHOOT-SLOW_DOWN_DEGREES) >= Math.abs(getHeading()) && opModeIsActive() && getHeading()>-1) {
+                robot.startMove(0,0,-power,0);
+
+            }
+            while(Math.abs(degrees-ANGLE_OVERSHOOT)>=Math.abs(getHeading())&& opModeIsActive() && getHeading()>-1){
+                robot.startMove(0,0,-TURN_ENDING_POWER,0);
+            }
+        }
+        robot.startMove(0,0,0,0);
+
     }
 
 }

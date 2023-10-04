@@ -6,12 +6,14 @@ package edu.elon.robotics;
  * adb connect 192.168.43.1
  */
 
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 
 public class RobotHardware {
 
@@ -29,6 +31,12 @@ public class RobotHardware {
     // 35 cm FROM CIRCLE ON GROUND
     // s= 29.5 cm
     // r = 17.5 cm
+
+    //control hub IMU
+    public IMU imu;
+    // roll is left/right roll
+    // yaw is turning
+    // pitch is front to back, ramp style
 
 
     public RobotHardware(HardwareMap hardwareMap) {
@@ -55,6 +63,23 @@ public class RobotHardware {
 
         // reset the drive encoders to zero
         resetDriveEncoders();
+
+        /*
+        The next three lines define Hub orientation.
+        Our hub is mounted horizontally with the printed logo pointing UP and the USB port pointing FORWARD.
+        */
+
+        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
+        RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
+        RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
+
+
+        // Now initialize the IMU with this mounting orientation
+        // This sample expects the IMU to be in a REV Hub and named "imu".
+        imu = hardwareMap.get(IMU.class, "imu");
+        imu.initialize(new IMU.Parameters(orientationOnRobot));
+        // Let's define the direction the robot starts pointing at as 0 degrees (of Yaw)
+        imu.resetYaw();
     }
 
     public int convertDistanceToTicks(double cm){
