@@ -23,7 +23,7 @@ public class AutoCommon extends LinearOpMode {
     private final double TURN_ENDING_POWER = 0.2;
 
     // number of degrees that will be done using the slow power
-    private final double SLOW_DOWN_DEGREES = 10;
+    private final double SLOW_DOWN_DEGREES = 15;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -47,7 +47,6 @@ public class AutoCommon extends LinearOpMode {
         sleep(milliseconds);
         robot.startMove(0,0,0,0);
     }
-
     protected void driveHeading(double distance, double heading, double maxPower){
         robot.resetDriveEncoders();
         double distanceForward = Math.sin(Math.abs(heading)) * Math.abs(distance);
@@ -160,5 +159,21 @@ public class AutoCommon extends LinearOpMode {
         robot.startMove(0,0,0,0);
 
     }
+
+
+    protected void driveIMU(double cm, double power){
+        robot.imu.resetYaw();
+        double heading = getHeading();
+        //negative yaw means turn aux clockwise
+        //positive yaw means turn aux counter-clockwise
+        //while yaw is not zero, add to it to make it zero
+        while((Math.abs(robot.motorLeft.getCurrentPosition()) < robot.convertDistanceToTicks(cm))){
+            robot.motorLeft.setPower(power*.58);
+            robot.motorRight.setPower(power*-.58);
+            robot.motorAux.setPower(.1*getHeading());
+        }
+
+    }
+
 
 }
