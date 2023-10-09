@@ -10,8 +10,10 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
@@ -38,6 +40,14 @@ public class RobotHardware {
     // yaw is turning
     // pitch is front to back, ramp style
 
+    //sensors
+    public DigitalChannel touchSensor;
+    public ColorSensor colorSensor;
+
+    public int maxBrightness;
+
+    public int minBrightness;
+
 
     public RobotHardware(HardwareMap hardwareMap) {
         /*
@@ -60,6 +70,12 @@ public class RobotHardware {
         motorAux = hardwareMap.dcMotor.get("motorAux");
         motorAux.setDirection(DcMotorSimple.Direction.FORWARD);
         motorAux.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        touchSensor = hardwareMap.get(DigitalChannel.class, "touchSensor");
+        touchSensor.setMode(DigitalChannel.Mode.INPUT);
+
+        colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
+        colorSensor.enableLed(true);
 
         // reset the drive encoders to zero
         resetDriveEncoders();

@@ -175,5 +175,29 @@ public class AutoCommon extends LinearOpMode {
 
     }
 
+    protected void touchMe(double power) {
+        while(robot.touchSensor.getState()) {
+            robot.startMove(power,0,0,0);
+        }
+        robot.startMove(0,0,0,0);
+    }
+
+    protected void driveToCalibrateLightSensor(double power) {
+        int smallest=100;
+        int largest=0;
+        while((Math.abs(robot.motorLeft.getCurrentPosition()) < robot.convertDistanceToTicks(20))){
+            robot.startMove(power,0,0,0);
+            System.out.println("brightness"+ robot.colorSensor.alpha());
+            if(robot.colorSensor.alpha()<smallest){
+                smallest=robot.colorSensor.alpha();
+            }
+            else if(robot.colorSensor.alpha()>largest){
+                largest=robot.colorSensor.alpha();
+            }
+        }
+        // brightness smallest100brightness largest3660
+        System.out.println("brightness smallest"+ smallest+"brightness largest"+largest);
+    }
+
 
 }
