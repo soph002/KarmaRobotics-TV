@@ -102,6 +102,11 @@ public class RobotHardware {
         return (int) (Math.abs(cm) * TICKS_PER_CM);
     }
 
+    public double convertTicksToDistance(double ticks){
+        return Math.abs(ticks) / TICKS_PER_CM;
+    }
+
+
     public int convertDegreesToTicks(double degrees){
         double arcLength = (degrees/FULL_CIRCLE) * Math.PI * TURNING_DIAMETER;
 

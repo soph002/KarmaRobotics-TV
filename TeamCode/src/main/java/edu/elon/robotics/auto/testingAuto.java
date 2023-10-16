@@ -12,7 +12,9 @@ public class testingAuto extends AutoCommon{
         super.runOpMode();
         waitForStart();
         // touchMe(.3);
-        driveToCalibrateLightSensor(.3);
+        // driveToCalibrateLightSensor(.3);
+
+        countWhiteLines(.05);
 
 //        // test turnIMU()
 //        turnIMU(90, 0.5);

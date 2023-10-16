@@ -183,7 +183,7 @@ public class AutoCommon extends LinearOpMode {
     }
 
     protected void driveToCalibrateLightSensor(double power) {
-        int smallest=100;
+        int smallest=10000;
         int largest=0;
         while((Math.abs(robot.motorLeft.getCurrentPosition()) < robot.convertDistanceToTicks(20))){
             robot.startMove(power,0,0,0);
@@ -195,9 +195,50 @@ public class AutoCommon extends LinearOpMode {
                 largest=robot.colorSensor.alpha();
             }
         }
+        robot.startMove(0,0,0,0);
         // brightness smallest100brightness largest3660
         System.out.println("brightness smallest"+ smallest+"brightness largest"+largest);
+
+        robot.maxBrightness=largest;
+        robot.minBrightness=smallest;
     }
 
+
+    protected void countWhiteLines(double power){
+        robot.resetDriveEncoders();
+        driveToCalibrateLightSensor(power);
+        int numLines=0;
+        boolean count=true;
+        while(robot.touchSensor.getState()){
+            System.out.println("alpha is currently"+robot.colorSensor.alpha());
+            robot.startMove(power,0,0,0);
+            if(robot.colorSensor.alpha() >= robot.maxBrightness && count){
+                System.out.println("lines detected at"+robot.colorSensor.alpha());
+                numLines++;
+                count=false;
+            }
+            else{
+                count=true;
+                System.out.println("countreset");
+            }
+//            if(robot.colorSensor.alpha() >= robot.minBrightness - 300 && robot.colorSensor.alpha() <=robot.minBrightness + 300){
+//                count=true;
+//                System.out.println("countreset");
+//            }
+        }
+        telemetry.addData("number of lines",numLines);
+        telemetry.update();
+
+        double encoderValue=robot.motorLeft.getCurrentPosition();
+        double cmFromEncoders=robot.convertTicksToDistance(encoderValue);
+        System.out.println("CM TRACKED"+cmFromEncoders);
+
+        telemetry.addData("cm tracked",cmFromEncoders);
+        telemetry.update();
+
+        driveDistance(cmFromEncoders,0,-.2);
+
+        System.out.println("number of lines detected"+numLines);
+    }
 
 }
