@@ -212,33 +212,32 @@ public class AutoCommon extends LinearOpMode {
         while(robot.touchSensor.getState()){
             System.out.println("alpha is currently"+robot.colorSensor.alpha());
             robot.startMove(power,0,0,0);
-            if(robot.colorSensor.alpha() >= robot.maxBrightness && count){
+
+            if(robot.colorSensor.alpha() >= robot.maxBrightness-500 && count){
                 System.out.println("lines detected at"+robot.colorSensor.alpha());
                 numLines++;
                 count=false;
             }
-            else{
+            else if (robot.colorSensor.alpha()<= robot.maxBrightness-700){
                 count=true;
                 System.out.println("countreset");
             }
-//            if(robot.colorSensor.alpha() >= robot.minBrightness - 300 && robot.colorSensor.alpha() <=robot.minBrightness + 300){
-//                count=true;
-//                System.out.println("countreset");
-//            }
+
         }
-        telemetry.addData("number of lines",numLines);
-        telemetry.update();
 
         double encoderValue=robot.motorLeft.getCurrentPosition();
         double cmFromEncoders=robot.convertTicksToDistance(encoderValue);
         System.out.println("CM TRACKED"+cmFromEncoders);
 
         telemetry.addData("cm tracked",cmFromEncoders);
+        telemetry.addData("number of lines ",numLines);
         telemetry.update();
 
         driveDistance(cmFromEncoders,0,-.2);
 
+
         System.out.println("number of lines detected"+numLines);
+        sleep(10000);
     }
 
 }
