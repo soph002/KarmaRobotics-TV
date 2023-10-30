@@ -86,24 +86,26 @@ public class LineFollower extends AutoCommon{
         robot.startMove(power,0,0,0);
         double sumError=0;
         double prevError=0;
-        double KP=.00092937*.6;
+        double KP=.9*(.00092937*.6);
         double dT=.03;
         double Pc=.30176470588;
-        double KI=(2.0*KP) * dT / Pc;
-        double KD=KP * Pc / (8*dT);
+        double KI=.9*((2.0*KP) * dT / Pc);
+        double KD=.9*(KP * (Pc / (8*dT)));
         while(opModeIsActive()){
             loopTimer.reset();
             double curLightIntensity=robot.colorSensor.alpha();
             double error=curLightIntensity-desiredLightValue;
-            sumError=sumError + error;
+            sumError=.8 * sumError + error;
             double diffError=error-prevError;
+            prevError=error;
+//            System.out.println("prevError is "+prevError);
+
 
             double turn = (KP*error)+(KI*sumError)+(KD*diffError);
-            System.out.println("error is"+error);
-            System.out.println("turn is"+turn);
-            prevError=error;
-            sleep(30 - Math.round(loopTimer.milliseconds()));
+//            System.out.println("error is"+error);
+//            System.out.println("turn is"+turn);
             robot.startMove(power,0,turn,0);
+            sleep(30 - Math.round(loopTimer.milliseconds()));
         }
     }
 
@@ -113,6 +115,6 @@ public class LineFollower extends AutoCommon{
         waitForStart();
         calibrateColorSensor(.3);
         sleep(500);
-        pidController(.3);
+        pidController(.175);
     }
 }
