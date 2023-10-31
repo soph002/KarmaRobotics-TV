@@ -167,12 +167,12 @@ public class AutoCommon extends LinearOpMode {
         //negative yaw means turn aux clockwise
         //positive yaw means turn aux counter-clockwise
         //while yaw is not zero, add to it to make it zero
-        while((Math.abs(robot.motorLeft.getCurrentPosition()) < robot.convertDistanceToTicks(cm))){
+        while((Math.abs(robot.motorLeft.getCurrentPosition()) < robot.convertDistanceToTicks(cm)) && opModeIsActive()){
             robot.motorLeft.setPower(power*.58);
             robot.motorRight.setPower(power*-.58);
             robot.motorAux.setPower(.1*getHeading());
         }
-
+        robot.startMove(0,0,0,0);
     }
 
     protected void touchMe(double power) {
