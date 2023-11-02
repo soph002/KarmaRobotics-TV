@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
@@ -47,6 +48,7 @@ public class RobotHardware {
     public int maxBrightness;
 
     public int minBrightness;
+    public DistanceSensor distanceSensor;
 
 
     public RobotHardware(HardwareMap hardwareMap) {
@@ -76,6 +78,8 @@ public class RobotHardware {
 
         colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
         colorSensor.enableLed(true);
+
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
 
         // reset the drive encoders to zero
         resetDriveEncoders();
