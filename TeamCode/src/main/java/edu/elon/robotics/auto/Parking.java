@@ -23,9 +23,13 @@ public class Parking extends AutoCommon{
         System.out.println("Flat wall"+ flatWall);
         boolean didWePark = false;
         System.out.println("max brightness "+ robot.maxBrightness);
-        while (robot.colorSensor.alpha()<(robot.maxBrightness-200) && opModeIsActive() && !didWePark) {
+        double minimumSpotLength = 10000000;
+        double startDistance=0;
+        double maxDepth=0;
+        double distanceToGoBack=0;
+        while (robot.colorSensor.alpha()<(robot.maxBrightness-200) && opModeIsActive()) {
             System.out.println("current brightness "+ robot.colorSensor.alpha());
-            while (robot.distanceSensor.getDistance(DistanceUnit.CM)<(flatWall+5) && opModeIsActive() && robot.colorSensor.alpha()<(robot.maxBrightness-200)) {
+            while (robot.distanceSensor.getDistance(DistanceUnit.CM)<=(flatWall+10) && opModeIsActive() && robot.colorSensor.alpha()<(robot.maxBrightness-200)) {
                 robot.imu.resetYaw();
                 robot.motorLeft.setPower(power*.58);
                 robot.motorRight.setPower(power*-.58);
@@ -33,44 +37,55 @@ public class Parking extends AutoCommon{
                 System.out.println("Distance Traveled"+ robot.convertTicksToDistance(robot.motorLeft.getCurrentPosition()));
                 System.out.println("Block Distance"+ robot.distanceSensor.getDistance(DistanceUnit.CM));
             }
-            double startDistance = robot.convertTicksToDistance(robot.motorLeft.getCurrentPosition());
+            startDistance = robot.convertTicksToDistance(robot.motorLeft.getCurrentPosition());
             System.out.println("Start distance: "+ startDistance);
-            double maxDepth = 0;
-//            double minDepth = 1000000;
-            while (robot.distanceSensor.getDistance(DistanceUnit.CM)>=(flatWall+5) && opModeIsActive() && (maxDepth-20)<robot.distanceSensor.getDistance(DistanceUnit.CM) && robot.colorSensor.alpha()<(robot.maxBrightness-200)) {
-                robot.imu.resetYaw();
-                robot.motorLeft.setPower(power*.58);
-                robot.motorRight.setPower(power*-.58);
-                robot.motorAux.setPower(.1*getHeading());
-                System.out.println("Distance Traveled"+ robot.convertTicksToDistance(robot.motorLeft.getCurrentPosition()));
-                System.out.println("Block Distance"+ robot.distanceSensor.getDistance(DistanceUnit.CM));
-                if (robot.distanceSensor.getDistance(DistanceUnit.CM) > maxDepth) {
+
+            double currentSpotLength = 0;
+            while (robot.distanceSensor.getDistance(DistanceUnit.CM) > (flatWall + 10) && opModeIsActive() && (maxDepth - 20) < robot.distanceSensor.getDistance(DistanceUnit.CM) && robot.colorSensor.alpha() < (robot.maxBrightness - 200)) {
+                if (robot.distanceSensor.getDistance(DistanceUnit.CM) > maxDepth && robot.distanceSensor.getDistance(DistanceUnit.CM) > (flatWall + 35)) {
                     maxDepth = robot.distanceSensor.getDistance(DistanceUnit.CM);
                 }
-//                if (robot.distanceSensor.getDistance(DistanceUnit.CM) < minDepth) {
-//                    minDepth = robot.distanceSensor.getDistance(DistanceUnit.CM);
-//                }
-//                if ((maxDepth-20)>robot.distanceSensor.getDistance(DistanceUnit.CM)) {
-//                    break;
-//                }
-            }
-            double parkingWidth = robot.convertTicksToDistance(robot.motorLeft.getCurrentPosition()) - startDistance;
-            robot.startMove(0,0,0,0);
-            System.out.println("parking width"+parkingWidth);
-
-            if (parkingWidth>=35 && (maxDepth-flatWall>=35)) {
-                sleep(2000);
-                driveDistance(20,0,-.1);
-                sleep(2000);
-                while (robot.distanceSensor.getDistance(DistanceUnit.CM)>25 && opModeIsActive()) {
-                    System.out.println("Block DistanceParking"+ robot.distanceSensor.getDistance(DistanceUnit.CM));
-                    robot.startMove(0,.1,0,0);
+                    robot.imu.resetYaw();
+                    robot.motorLeft.setPower(power * .58);
+                    robot.motorRight.setPower(power * -.58);
+                    robot.motorAux.setPower(.1 * getHeading());
+                    System.out.println("Distance Traveled" + robot.convertTicksToDistance(robot.motorLeft.getCurrentPosition()));
+                    System.out.println("Block Distance" + robot.distanceSensor.getDistance(DistanceUnit.CM));
+//                    if (robot.distanceSensor.getDistance(DistanceUnit.CM) > maxDepth) {
+//                        maxDepth = robot.distanceSensor.getDistance(DistanceUnit.CM);
+//                    }
+                    currentSpotLength = robot.convertTicksToDistance(robot.motorLeft.getCurrentPosition()) - startDistance;
                 }
-                didWePark=true;
+            if (minimumSpotLength > currentSpotLength && currentSpotLength>=35){
+                    minimumSpotLength = currentSpotLength;
+                    System.out.println("minimumspot"+minimumSpotLength);
+                    distanceToGoBack = robot.convertTicksToDistance(robot.motorLeft.getCurrentPosition());
+                System.out.println("goback"+distanceToGoBack);
+                }
+
             }
-            robot.startMove(0,0,0,0);
+
+
+//            double parkingWidth = robot.convertTicksToDistance(robot.motorLeft.getCurrentPosition()) - startDistance;
+        robot.startMove(0,0,0,0);
+//            System.out.println("parking width"+parkingWidth);
+        System.out.println("isittrue"+(minimumSpotLength>=35));
+        System.out.println("isittrue"+((maxDepth-flatWall)>=35));
+        System.out.println("maxdepth"+maxDepth);
+        if (minimumSpotLength>=35 && ((maxDepth-flatWall)>=35)) {
+            System.out.println("imhere");
             sleep(2000);
+            double driveBack = (robot.convertTicksToDistance(robot.motorLeft.getCurrentPosition())-distanceToGoBack)+20;
+            robot.resetDriveEncoders();
+            driveIMU(driveBack,-.1);
+            sleep(2000);
+            while (robot.distanceSensor.getDistance(DistanceUnit.CM)>25 && opModeIsActive()) {
+                System.out.println("Block DistanceParking"+ robot.distanceSensor.getDistance(DistanceUnit.CM));
+                robot.startMove(0,.1,0,0);
+            }
+            didWePark=true;
         }
+
         robot.startMove(0,0,0,0);
         System.out.println("didwepark"+didWePark);
         if (!didWePark) {
