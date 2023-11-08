@@ -9,7 +9,10 @@ public class Parking extends AutoCommon{
     protected void lookingForParking(double power) {
         driveToCalibrateLightSensor(power);
         while (robot.colorSensor.alpha()<(robot.maxBrightness-200) && opModeIsActive()) {
-            robot.startMove(power,0,0,0);
+            robot.imu.resetYaw();
+            robot.motorLeft.setPower(power*.58);
+            robot.motorRight.setPower(power*-.58);
+            robot.motorAux.setPower(.1*getHeading());
         }
         robot.startMove(0,0,0,0);
         sleep(2000);
@@ -19,9 +22,10 @@ public class Parking extends AutoCommon{
         double flatWall = robot.distanceSensor.getDistance(DistanceUnit.CM);
         System.out.println("Flat wall"+ flatWall);
         boolean didWePark = false;
-
+        System.out.println("max brightness "+ robot.maxBrightness);
         while (robot.colorSensor.alpha()<(robot.maxBrightness-200) && opModeIsActive() && !didWePark) {
-            while (robot.distanceSensor.getDistance(DistanceUnit.CM)<(flatWall+5) && opModeIsActive()) {
+            System.out.println("current brightness "+ robot.colorSensor.alpha());
+            while (robot.distanceSensor.getDistance(DistanceUnit.CM)<(flatWall+5) && opModeIsActive() && robot.colorSensor.alpha()<(robot.maxBrightness-200)) {
                 robot.imu.resetYaw();
                 robot.motorLeft.setPower(power*.58);
                 robot.motorRight.setPower(power*-.58);
@@ -33,7 +37,7 @@ public class Parking extends AutoCommon{
             System.out.println("Start distance: "+ startDistance);
             double maxDepth = 0;
 //            double minDepth = 1000000;
-            while (robot.distanceSensor.getDistance(DistanceUnit.CM)>=(flatWall+5) && opModeIsActive() && (maxDepth-20)<robot.distanceSensor.getDistance(DistanceUnit.CM)) {
+            while (robot.distanceSensor.getDistance(DistanceUnit.CM)>=(flatWall+5) && opModeIsActive() && (maxDepth-20)<robot.distanceSensor.getDistance(DistanceUnit.CM) && robot.colorSensor.alpha()<(robot.maxBrightness-200)) {
                 robot.imu.resetYaw();
                 robot.motorLeft.setPower(power*.58);
                 robot.motorRight.setPower(power*-.58);
@@ -68,6 +72,23 @@ public class Parking extends AutoCommon{
             sleep(2000);
         }
         robot.startMove(0,0,0,0);
+        System.out.println("didwepark"+didWePark);
+        if (!didWePark) {
+            double distance = robot.convertTicksToDistance(robot.motorLeft.getCurrentPosition());
+            robot.resetDriveEncoders();
+            driveIMU(distance, -.3);
+            robot.startMove(0,0,0,0);
+            sleep(2000);
+            turnIMU(-90,.3);
+            sleep(2000);
+            while (robot.colorSensor.alpha()<(robot.maxBrightness-200) && opModeIsActive()) {
+                robot.imu.resetYaw();
+                robot.motorLeft.setPower(-power*.58);
+                robot.motorRight.setPower(-power*-.58);
+                robot.motorAux.setPower(.1*getHeading());
+            }
+
+        }
     }
     @Override
     public void runOpMode() throws InterruptedException {
