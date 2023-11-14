@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class RobotHardware {
 
@@ -49,6 +50,32 @@ public class RobotHardware {
 
     public int minBrightness;
     public DistanceSensor distanceSensor;
+
+    // all the variable for the arm
+    public DcMotor motorArm;
+
+    public Servo servoGripper;
+
+    public Servo servoWrist;
+
+    public ColorSensor colorArm;
+
+    // constants for controlling the arm
+    public final double ARM_INIT_POWER = -0.15; // init speed of the motor
+    public final double ARM_POWER_UP = 0.3;     // up speed of the motor
+    public final double ARM_POWER_DOWN = -0.2;  // down speed of the motor
+    public final int ARM_MAX_HEIGHT = 2375;     // encoder ticks of upper limit
+
+    // constants for controlling the wrist
+    public static final double WRIST_PICKUP_POS = 0.8; // parallel to ground
+    public final double WRIST_FULLY_DOWN = 0.1;        // minimum position
+    public final double WRIST_FULLY_UP = 0.9;          // maximum position
+    public final double WRIST_INCREMENT = 0.05;        // delta value
+
+    // constants for controlling the gripper
+    public static final double GRIPPER_FULLY_OPEN = 0.1; // gripper open
+    public final double GRIPPER_FULLY_CLOSED = 0.55;     // gripper closed
+    public final double GRIPPER_INCREMENT = 0.05;        // delta value
 
 
     public RobotHardware(HardwareMap hardwareMap) {
@@ -100,6 +127,10 @@ public class RobotHardware {
         imu.initialize(new IMU.Parameters(orientationOnRobot));
         // Let's define the direction the robot starts pointing at as 0 degrees (of Yaw)
         imu.resetYaw();
+
+        // reset the servos (temporary for now)
+        servoGripper.setPosition(0.5);
+        servoWrist.setPosition(0.5);
     }
 
     public int convertDistanceToTicks(double cm){
