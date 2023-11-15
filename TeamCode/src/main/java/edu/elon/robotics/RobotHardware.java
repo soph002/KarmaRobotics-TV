@@ -61,20 +61,20 @@ public class RobotHardware {
     public ColorSensor colorArm;
 
     // constants for controlling the arm
-    public final double ARM_INIT_POWER = -0.15; // init speed of the motor
-    public final double ARM_POWER_UP = 0.3;     // up speed of the motor
-    public final double ARM_POWER_DOWN = -0.2;  // down speed of the motor
+    public final double ARM_INIT_POWER = 0.25; // init speed of the motor
+    public final double ARM_POWER_UP = -0.3;     // up speed of the motor
+    public final double ARM_POWER_DOWN = 0.2;  // down speed of the motor
     public final int ARM_MAX_HEIGHT = 2375;     // encoder ticks of upper limit
 
     // constants for controlling the wrist
-    public static final double WRIST_PICKUP_POS = 0.8; // parallel to ground
+    public static final double WRIST_PICKUP_POS = 0.6; // parallel to ground
     public final double WRIST_FULLY_DOWN = 0.1;        // minimum position
     public final double WRIST_FULLY_UP = 0.9;          // maximum position
     public final double WRIST_INCREMENT = 0.05;        // delta value
 
     // constants for controlling the gripper
-    public static final double GRIPPER_FULLY_OPEN = 0.1; // gripper open
-    public final double GRIPPER_FULLY_CLOSED = 0.55;     // gripper closed
+    public static final double GRIPPER_FULLY_OPEN = 0.9; // gripper open
+    public final double GRIPPER_FULLY_CLOSED = 0.45;     // gripper closed
     public final double GRIPPER_INCREMENT = 0.05;        // delta value
 
 
@@ -108,6 +108,19 @@ public class RobotHardware {
 
         distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
 
+        motorArm = hardwareMap.dcMotor.get("motorArm");
+        motorArm.setDirection(DcMotorSimple.Direction.FORWARD);
+        motorArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        servoGripper = hardwareMap.get(Servo.class,"servoGripper");
+        // reset the servos (temporary for now)
+        servoGripper.setPosition(0.5);
+        servoWrist = hardwareMap.get(Servo.class,"servoWrist");
+        servoWrist.setPosition(0.5);
+
+        colorArm = hardwareMap.get(ColorSensor.class, "colorArm");
+        colorArm.enableLed(true);
+
         // reset the drive encoders to zero
         resetDriveEncoders();
 
@@ -128,9 +141,7 @@ public class RobotHardware {
         // Let's define the direction the robot starts pointing at as 0 degrees (of Yaw)
         imu.resetYaw();
 
-        // reset the servos (temporary for now)
-        servoGripper.setPosition(0.5);
-        servoWrist.setPosition(0.5);
+
     }
 
     public int convertDistanceToTicks(double cm){
