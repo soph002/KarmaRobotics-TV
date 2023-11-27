@@ -61,13 +61,14 @@ public class RobotHardware {
     public ColorSensor colorArm;
 
     // constants for controlling the arm
-    public final double ARM_INIT_POWER = 0.25; // init speed of the motor
-    public final double ARM_POWER_UP = -0.3;     // up speed of the motor
-    public final double ARM_POWER_DOWN = 0.2;  // down speed of the motor
-    public final int ARM_MAX_HEIGHT = 2375;     // encoder ticks of upper limit
+    public final double ARM_INIT_POWER = -0.15; // init speed of the motor
+    public final double ARM_POWER_UP = 0.3;     // up speed of the motor
+    public final double ARM_POWER_DOWN = -0.2;  // down speed of the motor
+    public final int ARM_MAX_HEIGHT = 1200;     // encoder ticks of upper limit
 
     // constants for controlling the wrist
-    public static final double WRIST_PICKUP_POS = 0.6; // parallel to ground
+    public static final double WRIST_START_POS = 0.7; // parallel to ground
+    public static final double WRIST_PICKUP_POS = 0.65; // parallel to ground
     public final double WRIST_FULLY_DOWN = 0.1;        // minimum position
     public final double WRIST_FULLY_UP = 0.9;          // maximum position
     public final double WRIST_INCREMENT = 0.05;        // delta value
@@ -109,7 +110,7 @@ public class RobotHardware {
         distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
 
         motorArm = hardwareMap.dcMotor.get("motorArm");
-        motorArm.setDirection(DcMotorSimple.Direction.FORWARD);
+        motorArm.setDirection(DcMotorSimple.Direction.REVERSE);
         motorArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         servoGripper = hardwareMap.get(Servo.class,"servoGripper");
@@ -199,4 +200,6 @@ public class RobotHardware {
         motorAux.setPower(powerAux);
 
     }
+
+
 }
