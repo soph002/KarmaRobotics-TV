@@ -68,7 +68,7 @@ public class RobotHardware {
 
     // constants for controlling the wrist
     public static final double WRIST_START_POS = 0.7; // parallel to ground
-    public static final double WRIST_PICKUP_POS = 0.65; // parallel to ground
+    public static final double WRIST_PICKUP_POS = 0.55; // parallel to ground
     public final double WRIST_FULLY_DOWN = 0.1;        // minimum position
     public final double WRIST_FULLY_UP = 0.9;          // maximum position
     public final double WRIST_INCREMENT = 0.05;        // delta value

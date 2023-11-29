@@ -102,8 +102,8 @@ public class finalLab extends LinearOpMode {
         wasLeftPressed=gamepad1.left_bumper;
 
         // limit the servo to possible gripper positions
-//        gripperPos = Range.clip(gripperPos, robot.GRIPPER_FULLY_CLOSED, robot.GRIPPER_FULLY_OPEN);
-//        wristPos = Range.clip(wristPos, robot.WRIST_FULLY_DOWN, robot.WRIST_FULLY_UP);
+        gripperPos = Range.clip(gripperPos, robot.GRIPPER_FULLY_CLOSED, robot.GRIPPER_FULLY_OPEN);
+        wristPos = Range.clip(wristPos, robot.WRIST_FULLY_DOWN, robot.WRIST_FULLY_UP);
 
         // set the servo positions
         robot.servoGripper.setPosition(gripperPos);
@@ -113,13 +113,7 @@ public class finalLab extends LinearOpMode {
         telemetry.addData("gripper pos", gripperPos);
         telemetry.addData("wrist pos", wristPos);
     }
-
-    int redHeight= 10;
-    int heightBlue=10;
-    int strafeBlue=64;
-    int strafeRed=50;
-    int driveBlue=24;
-    int driveRed=55;
+    boolean fartherCourse=false;
     private void boxAutomation(){
         if(gamepad1.right_bumper && !wasRightPressed)
         {
@@ -135,42 +129,102 @@ public class finalLab extends LinearOpMode {
             robot.motorArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             robot.motorArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            int boxAlpha = robot.colorSensor.alpha();
-            System.out.println("boxAlpha"+ boxAlpha);
-            telemetry.addData("color Sensor",boxAlpha);
-            // boxAlpha red is 220
-            // boxAlpha blue is 197
-            if(boxAlpha<200){ //blue
-                // set height for motorArm
+            int boxBlue = robot.colorArm.blue();
+            System.out.println("alpha"+robot.colorArm.alpha());
+            System.out.println("blue"+robot.colorArm.blue());
+            System.out.println("red"+robot.colorArm.red()+"g"+robot.colorArm.green());
+            telemetry.addData("color Sensor",boxBlue);
 
-                while(Math.abs(robot.motorArm.getCurrentPosition()) < robot.ARM_MAX_HEIGHT && opModeIsActive()) {
-                    robot.motorArm.setPower(robot.ARM_POWER_UP);
+            if(fartherCourse){
+                int armTicksRed= 1007;
+                double gripperRed=.15;
+                int armTickBlue=292;
+                double gripperBlue=.55;
+                int strafeBlue=35;
+                int strafeRed=62;
+                int driveBlue=0;
+                int driveRed=11;
+                if(boxBlue>300){ //blue
+                    // set height for motorArm
+                    while(Math.abs(robot.motorArm.getCurrentPosition()) < armTickBlue && opModeIsActive()) {
+                        robot.motorArm.setPower(robot.ARM_POWER_UP);
+                    }
+                    robot.motorArm.setPower(0);
+
+                    // drive to the box strafe then drive forward
+                    driveDistance(0,strafeBlue,.5);
+                    driveDistance(driveBlue,0,.5);
+                    sleep(500);
+                    robot.servoWrist.setPosition(gripperBlue);
+                    sleep(500);
+                    // open gripper
+                    robot.servoGripper.setPosition(robot.GRIPPER_FULLY_OPEN);
+                    sleep(500);
+                    driveDistance(driveBlue,0,-.5);
+                    driveDistance(0,strafeBlue,-.5);
                 }
-                robot.motorArm.setPower(0);
 
-                // drive to the box strafe then drive forward
-                driveDistance(0,strafeBlue,.5);
-                driveDistance(driveBlue,0,.5);
-                robot.servoWrist.setPosition(.3);
-                // open gripper
-                robot.servoGripper.setPosition(robot.GRIPPER_FULLY_OPEN);
-                driveDistance(driveBlue,0,-.5);
-                driveDistance(0,strafeBlue,-.5);
+                else{
+                    while(Math.abs(robot.motorArm.getCurrentPosition()) < armTicksRed && opModeIsActive()) {
+                        robot.motorArm.setPower(robot.ARM_POWER_UP);
+                    }
+                    robot.motorArm.setPower(0);
+
+                    driveDistance(0,strafeRed,-0.5);
+                    driveDistance(driveRed,0,0.5);
+                    sleep(500);
+                    robot.servoWrist.setPosition(gripperRed);
+                    // open gripper
+                    robot.servoGripper.setPosition(robot.GRIPPER_FULLY_OPEN);
+                    sleep(500);
+                    driveDistance(driveRed,0,-0.5);
+                    driveDistance(0,strafeRed,0.5);
+                }
             }
             else{
-                while(Math.abs(robot.motorArm.getCurrentPosition()) < robot.ARM_MAX_HEIGHT && opModeIsActive()) {
-                    robot.motorArm.setPower(robot.ARM_POWER_UP);
+                int strafeBlue=64;
+                int strafeRed=62;
+                int driveBlue=18;
+                int driveRed=45;
+                int robotArmDroppingPositionLOW=268;
+
+                if(boxBlue>170){ //blue
+                    // set height for motorArm
+
+                    while(Math.abs(robot.motorArm.getCurrentPosition()) < 872 && opModeIsActive()) {
+                        robot.motorArm.setPower(robot.ARM_POWER_UP);
+                    }
+                    robot.motorArm.setPower(0);
+
+                    // drive to the box strafe then drive forward
+                    driveDistance(0,strafeBlue,.5);
+                    driveDistance(driveBlue,0,.5);
+                    sleep(500);
+                    robot.servoWrist.setPosition(.2);
+                    sleep(500);
+                    // open gripper
+                    robot.servoGripper.setPosition(robot.GRIPPER_FULLY_OPEN);
+                    sleep(500);
+                    driveDistance(driveBlue,0,-.5);
+                    driveDistance(0,strafeBlue,-.5);
                 }
-                robot.motorArm.setPower(0);
+                else{ //red
+                    while(Math.abs(robot.motorArm.getCurrentPosition()) < robotArmDroppingPositionLOW && opModeIsActive()) {
+                        robot.motorArm.setPower(robot.ARM_POWER_UP);
+                    }
+                    robot.motorArm.setPower(0);
 
-                driveDistance(0,strafeRed,-0.5);
-                driveDistance(driveRed,0,0.5);
-                robot.servoWrist.setPosition(.3);
-                // open gripper
-                robot.servoGripper.setPosition(robot.GRIPPER_FULLY_OPEN);
-                driveDistance(driveRed,0,-0.5);
-                driveDistance(0,strafeRed,0.5);
+                    driveDistance(0,strafeRed,-0.5);
+                    driveDistance(driveRed,0,0.5);
+                    sleep(500);
+                    robot.servoWrist.setPosition(.54);
+                    // open gripper
+                    robot.servoGripper.setPosition(robot.GRIPPER_FULLY_OPEN);
+                    sleep(500);
+                    driveDistance(driveRed,0,-0.5);
+                    driveDistance(0,strafeRed,0.5);
 
+                }
             }
 
 
