@@ -182,13 +182,13 @@ public class finalLab extends LinearOpMode {
                 }
             }
             else{
-                int strafeBlue=64;
+                int strafeBlue=69;
                 int strafeRed=62;
-                int driveBlue=18;
+                int driveBlue=15;
                 int driveRed=45;
                 int robotArmDroppingPositionLOW=268;
 
-                if(boxBlue>170){ //blue
+                if(boxBlue>300){ //blue
                     // set height for motorArm
 
                     while(Math.abs(robot.motorArm.getCurrentPosition()) < 872 && opModeIsActive()) {
