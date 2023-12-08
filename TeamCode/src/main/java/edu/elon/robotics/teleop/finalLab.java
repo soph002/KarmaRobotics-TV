@@ -32,7 +32,10 @@ public class finalLab extends LinearOpMode {
             stickDriving();
             controlArm();
             controlHand();
-            boxAutomation();
+//            boxAutomation();
+            armInital();
+            dropHighWall();
+            dropLowWall();
 
             /* telemetry */
             showDriveMotorEncoders();
@@ -76,6 +79,8 @@ public class finalLab extends LinearOpMode {
 
     private boolean wasRightPressed = false;
     private boolean wasLeftPressed = false;
+    private boolean wasLeftTriggerPressed=false;
+    private boolean wasRightTriggerPressed=false;
 
     private void controlHand() {
         // open/close the gripper
@@ -90,8 +95,6 @@ public class finalLab extends LinearOpMode {
             wristPos += robot.WRIST_INCREMENT;
         } else if (gamepad1.a && !wasAPressed) {
             wristPos -= robot.WRIST_INCREMENT;
-        }else if (gamepad1.left_bumper && !wasLeftPressed) {
-            wristPos = robot.WRIST_PICKUP_POS;
         }
 
         // remember button presses
@@ -99,7 +102,6 @@ public class finalLab extends LinearOpMode {
         wasBPressed = gamepad1.b;
         wasXPressed = gamepad1.x;
         wasYPressed = gamepad1.y;
-        wasLeftPressed=gamepad1.left_bumper;
 
         // limit the servo to possible gripper positions
         gripperPos = Range.clip(gripperPos, robot.GRIPPER_FULLY_CLOSED, robot.GRIPPER_FULLY_OPEN);
@@ -114,6 +116,24 @@ public class finalLab extends LinearOpMode {
         telemetry.addData("wrist pos", wristPos);
     }
     boolean fartherCourse=false;
+
+    private void armInital(){
+        if(gamepad1.left_bumper && !wasLeftPressed){
+            robot.servoGripper.setPosition(robot.GRIPPER_FULLY_OPEN);
+            robot.servoWrist.setPosition(robot.WRIST_START_POS);
+
+            // let the servos get to their position before moving the arm
+            sleep(500);
+            // initialize the arm
+            robot.motorArm.setPower(robot.ARM_POWER_DOWN);
+            while (robot.touchSensor.getState()) {
+                // do nothing -- waiting for a button press
+            }
+
+            robot.motorArm.setPower(0);
+        }
+        wasLeftPressed=gamepad1.left_bumper;
+    }
     private void boxAutomation(){
         if(gamepad1.right_bumper && !wasRightPressed)
         {
@@ -231,6 +251,48 @@ public class finalLab extends LinearOpMode {
         }
 
         wasAPressed = gamepad1.right_bumper;
+
+    }
+
+    private void dropHighWall(){
+        if(gamepad1.left_trigger >.1 && !wasLeftTriggerPressed){
+            System.out.println("Moving arm");
+            while(Math.abs(robot.motorArm.getCurrentPosition()) > 689 && opModeIsActive()) {
+                System.out.println("Moving ARM MOVE");
+                robot.motorArm.setPower(robot.ARM_POWER_DOWN);
+            }
+            while(Math.abs(robot.motorArm.getCurrentPosition()) < 689 && opModeIsActive()) {
+                robot.motorArm.setPower(robot.ARM_POWER_UP);
+            }
+            robot.motorArm.setPower(0);
+            robot.servoWrist.setPosition(.1);
+            sleep(500);
+            robot.servoGripper.setPosition(robot.GRIPPER_FULLY_OPEN);
+        }
+
+        wasLeftTriggerPressed = gamepad1.left_trigger>.1;
+
+
+    }
+
+    private void dropLowWall(){
+        if(gamepad1.right_trigger>.1 && !wasRightTriggerPressed){
+            System.out.println("Moving arm low"+robot.motorArm.getCurrentPosition());
+            robot.servoWrist.setPosition(.2); // may need to change
+            System.out.println("Moving arm low wrist"+robot.servoWrist.getPosition());
+            while(Math.abs(robot.motorArm.getCurrentPosition()) > 370 && opModeIsActive()) {
+                robot.motorArm.setPower(robot.ARM_POWER_DOWN);
+            }
+            while(Math.abs(robot.motorArm.getCurrentPosition()) < 370 && opModeIsActive()) {
+                robot.motorArm.setPower(robot.ARM_POWER_UP);
+            }
+            robot.motorArm.setPower(0);
+            sleep(500);
+            robot.servoGripper.setPosition(robot.GRIPPER_FULLY_OPEN);
+        }
+
+        wasRightTriggerPressed = gamepad1.right_trigger>.1;
+
 
     }
 

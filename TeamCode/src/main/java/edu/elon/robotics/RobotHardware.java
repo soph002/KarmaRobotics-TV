@@ -62,8 +62,8 @@ public class RobotHardware {
 
     // constants for controlling the arm
     public final double ARM_INIT_POWER = -0.15; // init speed of the motor
-    public final double ARM_POWER_UP = 0.3;     // up speed of the motor
-    public final double ARM_POWER_DOWN = -0.2;  // down speed of the motor
+    public final double ARM_POWER_UP = 0.5;     // up speed of the motor
+    public final double ARM_POWER_DOWN = -0.5;  // down speed of the motor
     public final int ARM_MAX_HEIGHT = 1200;     // encoder ticks of upper limit
 
     // constants for controlling the wrist
